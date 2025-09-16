@@ -279,7 +279,7 @@ const HERO_LAYOUT = {
     montyWidth: "14vw"
   },
   mobile: {
-    sceneSvH: 400,
+    sceneSvH: 800,
     background: {
       left: "35%",
       right: "auto",
