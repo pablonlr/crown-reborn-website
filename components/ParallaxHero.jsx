@@ -52,8 +52,8 @@ const HERO_CFG = {
     preStart: 0.0,
     preEnd: 0.52,
     introStart: 0.52,
-    introEnd: 0.65,
-    foreStart: 0.65,
+    introEnd: 0.75,
+    foreStart: 0.75,
     fgShowEnd: 0.95,
     end: 1
   },
@@ -144,6 +144,14 @@ const HERO_CFG = {
     ],
     widthVw: 10
   },
+  migration: {
+    opacity: [
+      { from: "fgShowEnd", to: "end", ease: "linear", start: 0, end: 1 }
+    ],
+    y: [
+      { from: "fgShowEnd", to: "end", ease: "out", start: 40, end: 0 }
+    ]
+  },
   layers: {
     b1: {
       scale: [
@@ -153,7 +161,7 @@ const HERO_CFG = {
       ],
       y: [
        { from: "introStart", to: "introEnd", ease: "out", startVh: 0, endVh: -0.15 },
-        { from: "foreStart", to: "end", ease: "inOut", startVh: -0.15, endVh: -0.35 }
+        { from: "foreStart", to: "end", ease: "inOut", startVh: -0.15, endVh: -0.25 }
       ]
     },
     b2: {
@@ -167,7 +175,7 @@ const HERO_CFG = {
       y: [
         { from: "preStart", to: "preEnd", ease: "out", startVh: 0.65, endVh: 0.47 },
         { from: "introStart", to: "introEnd", ease: "out", startVh: 0.47, endVh: 0.31 },
-        { from: "foreStart", to: "end", ease: "inOut", startVh: 0.31, endVh: 0.05}
+        { from: "foreStart", to: "end", ease: "inOut", startVh: 0.31, endVh: 0.25}
       ]
     },
     b4: {
@@ -241,6 +249,9 @@ export default function ParallaxHero() {
   // Monty
   const montyOpacity = trackValue(HERO_CFG.monty.opacity, p, vh, M);
   const montyTY = trackValue(HERO_CFG.monty.y, p, vh, M);
+  const migrationOpacity = trackValue(HERO_CFG.migration.opacity, p, vh, M);
+  const migrationTY = trackValue(HERO_CFG.migration.y, p, vh, M);
+  const migrationPointerEvents = migrationOpacity > 0.05 ? "auto" : "none";
   const s1 = clamp01((p - 0.25) / 0.18);
   const s2 = clamp01((p - 0.52) / 0.18);
   const s3 = clamp01((p - 0.78) / 0.18);
@@ -284,16 +295,16 @@ export default function ParallaxHero() {
 
             <div className="absolute inset-0 flex flex-col items-center justify-start text-center gap-3">
               <div style={{ opacity: fHOpacity, transform: `translate3d(0, ${fHTY}px, 0)` }}>
-                <h2 className="text-2xl  md:text-[1.75rem] font-extrabold text-white">21 Crowns, 21 Crypto Moments.</h2>
+                <h2 className="text-2xl  md:text-[1.75rem] font-extrabold text-white font-display">21 Crowns, 21 Crypto Moments.</h2>
               </div>
               <div style={{ opacity: fPOpacity, transform: `translate3d(0, ${fPTY}px, 0)` }}>
-                <p className="text-white text-lg md:text-3xl  font-[350] tracking-wide font-montserrat">Forged from the blockchain’s mythos.</p>
+                <p className="text-white text-lg md:text-3xl  font-[350] tracking-wide font-display">Forged from the blockchain’s mythos.</p>
               </div>
               <div style={{ opacity: fCOpacity, transform: `translate3d(0, ${fCTY}px, 0)` }}>
-                <p className="text-white text-xl md:text-[1.75rem] font-[350] uppercase font-montserrat">THE PAST IS NOT LONGER REMEMBERED IT’S MINTED</p>
+                <p className="text-white text-xl md:text-[1.75rem] font-[350] uppercase font-display">THE PAST IS NOT LONGER REMEMBERED IT’S MINTED</p>
               </div>
               <div style={{ opacity: ctaOpacity, transform: `translate3d(0, ${ctaTY}px, 0)` }}>
-                <a href="#museum" className="inline-block rounded-2xl bg-[#FF7400] text-white px-6 py-2 text-lg font-black shadow-lg hover:scale-[1.03] transition-transform">Pick your Crown</a>
+                <a href="#museum" className="inline-block rounded-2xl bg-[#FF7400] text-white px-6 py-2 text-lg font-black shadow-lg hover:scale-[1.03] transition-transform font-auxiliar">Pick your Crown</a>
               </div>
             </div>
           </div>
@@ -301,9 +312,37 @@ export default function ParallaxHero() {
 
         
       </div>
+    <div
+      className="absolute bottom-6 left-12 z-50"
+      style={{ opacity: migrationOpacity, transform: `translate3d(0, ${migrationTY}px, 0)`, pointerEvents: migrationPointerEvents, willChange: "opacity, transform" }}
+    >
+      <div className="relative flex items-center gap-3 rounded-xl border border-white/60 bg-white/95 min-w-[380px] pr-4  overflow-visible">
+        <img
+          src="/hero/monty_wise.png"
+          alt="Monty with migration notice"
+          className="absolute left-5 bottom-0 h-26 w-auto select-none pointer-events-none"
+          draggable="false"
+        />
+
+        {/* Texto */}
+        <div className="flex flex-col leading-tight py-4 pl-8 ml-17">
+          <div className="text-black text-lg font-light font-display">CRW owner?</div>
+          <div className="text-sm text-black font-auxiliar font-bold">Migrate to ERC-20</div>
+        </div>
+
+        {/* Botón a la derecha */}
+        <a
+          href="#migrate"
+          className="ml-2 inline-flex font-auxiliar items-center justify-center rounded-lg bg-[#007CCA] px-5 py-2 text-md font-bold text-white shadow-md transition-transform hover:scale-[1.04] "
+        >
+          Migrate
+        </a>
+      </div>
+    </div>
+
       <div className="pointer-events-none absolute left-1/2 bottom-[0] " style={{ opacity: montyOpacity, transform: `translate3d(-50%, ${montyTY}px, 0)` }}>
         <img src="/hero/monty.svg" alt="Monty" className="h-auto" style={{ width: `${HERO_CFG.monty.widthVw}vw` }} />
-      </div>
+      </div>zd
     </section>
   );
 }
