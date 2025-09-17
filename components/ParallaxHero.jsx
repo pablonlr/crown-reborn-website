@@ -76,7 +76,7 @@ const HERO_CFG = {
     introStart: 0.52,
     introEnd: 0.75,
     foreStart: 0.75,
-    fgShowEnd: 0.95,
+    fgShowEnd: 0.92,
     end: 1
   },
   title: { fadeMult: 1.1 },
@@ -279,7 +279,7 @@ const HERO_LAYOUT = {
     montyWidth: "14vw"
   },
   mobile: {
-    sceneSvH: 800,
+    sceneSvH: 900,
     background: {
       left: "35%",
       right: "auto",
@@ -433,11 +433,13 @@ export default function ParallaxHero() {
   const s2 = clamp01((p - 0.52) / 0.18);
   const s3 = clamp01((p - 0.78) / 0.18);
 
+  const sectionHeight = vh > 0 ? `${(layout.sceneSvH / 100) * vh}px` : `${layout.sceneSvH}svh`;
+
   return (
     <section
       ref={containerRef}
       className="relative bg-black"
-      style={{ height: `${layout.sceneSvH}svh` }}
+      style={{ height: sectionHeight }}
       aria-busy={!heroReady}
     >
       <div
