@@ -315,17 +315,31 @@ export default function ParallaxHero() {
   const [viewportVariant, setViewportVariant] = useState("desktop");
   const [heroReady, setHeroReady] = useState(false);
   useEffect(() => {
+    const updateVh = () => {
+      const viewport = window.visualViewport;
+      const height = viewport?.height ?? window.innerHeight ?? 0;
+      setVh(height);
+    };
+
     const onResize = () => {
       const width = window.innerWidth || 0;
-      setVh(window.innerHeight || 0);
       setViewportVariant(getViewportVariant(width));
+      updateVh();
     };
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onMQ = () => setReduced(mq.matches);
     onResize(); onMQ();
+    const visualViewport = window.visualViewport;
+    visualViewport?.addEventListener("resize", updateVh);
+    visualViewport?.addEventListener("scroll", updateVh);
     window.addEventListener("resize", onResize);
     mq.addEventListener("change", onMQ);
-    return () => { window.removeEventListener("resize", onResize); mq.removeEventListener("change", onMQ); };
+    return () => {
+      visualViewport?.removeEventListener("resize", updateVh);
+      visualViewport?.removeEventListener("scroll", updateVh);
+      window.removeEventListener("resize", onResize);
+      mq.removeEventListener("change", onMQ);
+    };
   }, []);
 
   useEffect(() => {
@@ -432,7 +446,10 @@ export default function ParallaxHero() {
           heroReady ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="sticky top-0 h-[100svh] overflow-hidden">
+        <div
+          className="sticky top-0 h-[100svh] overflow-hidden"
+          style={{ height: vh > 0 ? `${vh}px` : undefined }}
+        >
           <div
             className="absolute top-0"
             style={{
