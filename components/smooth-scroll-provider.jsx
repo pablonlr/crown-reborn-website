@@ -6,11 +6,16 @@ export default function SmoothScrollProvider({ children }) {
   const lenisRef = useRef(null);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const prefersReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const isTouchPointer = window.matchMedia("(pointer: coarse)");
+    if (prefersReduce.matches || isTouchPointer.matches) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.1,
       wheelMultiplier: 1,
-      touchMultiplier: 2,
+      touchMultiplier: 1,
       easing: t => 1 - Math.pow(1 - t, 3),
       smoothWheel: true
     });
